@@ -1,0 +1,40 @@
+name: minimal.example.flask.zmq
+region: fra
+services:
+- environment_slug: python
+  github:
+    branch: main
+    deploy_on_push: true
+    repo: ShadowCodeCz/c3
+  http_port: 8080
+  instance_count: 1
+  instance_size_slug: basic-xs
+  internal_ports:
+  - 55555
+  name: flask-zmq-client-service
+  routes:
+  - path: /
+  run_command: python run.py
+- environment_slug: python
+  github:
+    branch: main
+    deploy_on_push: true
+    repo: ShadowCodeCz/c3.worker
+  instance_count: 1
+  instance_size_slug: basic-xs
+  internal_ports:
+  - 55555
+  name: zmq-server-service
+  run_command: python zmq_server.py
+  source_dir: /
+workers:
+- environment_slug: python
+  github:
+    branch: main
+    deploy_on_push: true
+    repo: ShadowCodeCz/c3.zmq.tester
+  instance_count: 1
+  instance_size_slug: basic-xs
+  name: zmq-client-worker
+  run_command: python client.py
+  source_dir: /
